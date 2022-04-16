@@ -1,11 +1,11 @@
 use std::fs;
 use std::env;
 extern crate termion;
-use termion::{color::Fg, color};
 use systemstat::{System, Platform, saturating_sub_bytes};
 use fsi;
 use home;
 use nixinfo;
+use termion::color::{Fg, self};
 
 struct Info {
     kernel: String,
@@ -224,7 +224,7 @@ fn main() {
     ].to_vec();
 
     for i in 0..**maxlength{
-        if i <= artlen-1 && i <= conflen-1 {
+        if i < *artlen && i < *conflen {
           let mut concat = art[i].clone() + &conf[i].clone();
           
           for j in 0..linetoinfo.len() {
@@ -234,14 +234,14 @@ fn main() {
 
           println!();
 
-        }else if i <= artlen-1
+        }else if i < *artlen
         {
           for k in 0..linetoinfo.len() {
               art[i] = check_contains(&art[i], linetoinfo[k].clone());
           }
           println!("{:20}", art[i]);
 
-        }else if i <= conflen-1
+        }else if i < *conflen
         {
           for k in 0..linetoinfo.len() {
               conf[i] = check_contains(&conf[i], linetoinfo[k].clone());
