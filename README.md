@@ -18,7 +18,7 @@ syntax:
 
 * (x) - color, where x is the first letter of the main 8 terminal colors
 * (xl) - light colors, where x is the first letter of the 8 terminal colors
-* <B> - make text bold
-* <I> - make text italic
-* <BI> - make text bold and italic
+* \<B> - make text bold
+* \<I> - make text italic
+* \<BI> - make text bold and italic
 * [module] - module to insert (name,cpu,cores,bat,mem,os,distro,kernel,shell,term)
