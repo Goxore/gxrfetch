@@ -5,7 +5,7 @@ use systemstat::{System, Platform, saturating_sub_bytes};
 use fsi;
 use home;
 use nixinfo;
-use termion::color::{Fg, self};
+use termion::{color::{Fg, self}, style};
 
 struct Info {
     kernel: String,
@@ -48,11 +48,11 @@ impl Default for Info {
 }
 
 fn get_art(path: &String) -> Vec<String> {
-    let art = fs::read_to_string(format!("{}{}",path,"herb")).
+    let art = fs::read_to_string(format!("{}{}",path,"ascii")).
         expect("Error while reading asciiart");
     let artvec = art
         .lines()
-        .map(|ln| String::from(ln))
+        .map(String::from)
         .collect::<Vec<String>>();
     artvec
 }
@@ -62,7 +62,7 @@ fn get_config(path: &String) -> Vec<String> {
         expect("Error while reading asciiart");
     let confvec = config
         .lines()
-        .map(|ln| String::from(ln))
+        .map(String::from)
         .collect::<Vec<String>>();
     confvec
 }
@@ -79,11 +79,11 @@ fn get_info() -> Info {
         .map(String::from)
         .collect::<Vec<String>>();
     for line in lines {
-        if line == "" {
+        if line.is_empty() {
             break;
         }
-        let line = line.replace("\t", "");
-        match line.split_once(":") {
+        let line = line.replace('\t', "");
+        match line.split_once(':') {
             Some(("model name", s)) => cpu_name = String::from(s.trim()),
             Some(("siblings", s)) => cpu_cores = String::from(s.trim()),
             _ => (),
@@ -105,12 +105,12 @@ fn get_info() -> Info {
         Err(x) => println!("\nMemory: error: {}", x)
     }
 
-    info.os = format!("{}", env::consts::OS);
+    info.os = env::consts::OS.to_string();
 
 
     match fsi::get_shell() {
         Ok(shell) => info.shell = shell,
-        Err(x) => println!("err"),
+        Err(x) => println!("error, {}", x),
     }
 
     match env::var("USER") {
@@ -164,7 +164,7 @@ fn check_contains(line: &String, contains: Cnts) -> String
   {
     newline.replace(&contains.0, &contains.1)
   }else {
-    newline.to_string()
+    newline
   }
 
 }
@@ -172,12 +172,12 @@ fn check_contains(line: &String, contains: Cnts) -> String
 fn main() {
     let info = get_info();
 
-    let mut path = String::new();
+    // let path;
 
-    match home::home_dir() {
-        Some(dir) => path = format!("{}/.config/gxrfetch/", dir.display()),
-        None => path = format!("./"),
-    }
+    let path = match home::home_dir() {
+        Some(dir) => format!("{}/.config/gxrfetch/", dir.display()),
+        None => "./".to_string(),
+    };
 
     let mut art = get_art(&path);
     let mut conf = get_config(&path);
@@ -185,9 +185,9 @@ fn main() {
 
     let artlen = &art.len();
     let conflen = &conf.len();
-    let mut maxlength = &artlen;
+    let mut maxlength = artlen;
 
-    if maxlength < &conflen {maxlength = &conflen;}
+    if maxlength < conflen {maxlength = conflen;}
 
     let linetoinfo: Vec<Cnts> = [
       ("[cpu]"  .to_string(), info.cpu_name),
@@ -221,9 +221,14 @@ fn main() {
       ("(cl)"   .to_string(), Fg(color::LightCyan).to_string()),
       ("(bgl)"  .to_string(), Fg(color::LightBlack).to_string()),
       ("(fgl)"  .to_string(), Fg(color::LightWhite).to_string()),
+
+      ("<B>"    .to_string(), style::Bold.to_string()),
+      ("<I>"    .to_string(), style::Italic.to_string()),
+      ("<BI>"   .to_string(), format!("{}{}",style::Bold,style::Italic)),
+      ("<N>"   .to_string(), style::Reset.to_string()),
     ].to_vec();
 
-    for i in 0..**maxlength{
+    for i in 0..*maxlength{
         if i < *artlen && i < *conflen {
           let mut concat = art[i].clone() + &conf[i].clone();
           
