@@ -1,5 +1,6 @@
 # gxrfetch
-A simple fetch program written in rust
+A simple and customizable fetch program written in rust.
+Works on most linux distros, probably works on mac, and maybe even somewhat works on windows (I did not test)
 
 # Installation
 run the command
@@ -8,11 +9,11 @@ run the command
 cargo build
 ```
 
-after which binary executable will be avaliable in `./target/debug/gxrfeth`
+binary executable will be avaliable in `./target/debug/gxrfeth`
 
 # Configuration
 
-Configuration files will be generated in `~/.config/gxrfetch` directory
+Configuration files are generated in `~/.config/gxrfetch` directory
 
 syntax:
 
@@ -22,3 +23,5 @@ syntax:
 * \<I> - make text italic
 * \<BI> - make text bold and italic
 * [module] - module to insert (name,cpu,cores,bat,mem,os,distro,kernel,shell,term)
+
+[gpu] module is also avaliable, but highly discouraged to use, as it decreases performance
