@@ -4,7 +4,7 @@ use std::io::{self, Result};
 extern crate termion;
 use systemstat::{saturating_sub_bytes, Platform, System};
 use termion::{
-    color::{self, Fg},
+    color::{self, *},
     style,
 };
 
@@ -34,7 +34,6 @@ fn matchvalue(result: io::Result<String>) -> String
 
 fn get_specific(name: &str) -> String
 {
-
     let sys = System::new();
     
     match name
@@ -49,6 +48,7 @@ fn get_specific(name: &str) -> String
         "[kernel]" => matchvalue(nixinfo::kernel()),
         "[term]" => matchvalue(nixinfo::terminal()),
         "[name]" => matchvalue(nixinfo::device()),
+        "[env]" => matchvalue(nixinfo::environment()),
         "[gpu]" => matchvalue(nixinfo::gpu()),
         "[cores]" =>
         {
@@ -75,27 +75,54 @@ fn get_specific(name: &str) -> String
             Ok(mem) => format!( "{} / {}", saturating_sub_bytes(mem.total, mem.free), mem.total),
             Err(x) => format!("err, {}", x),
         },
+        "[col]" => {
+            format!("{}  {}  {}  {}  {}  {}  {}  {}  {}",Bg(Black),Bg(Red),Bg(Green),Bg(Yellow),Bg(Blue),Bg(Magenta),Bg(Cyan),Bg(White),Bg(Black))
+        },
+        "[col2]" => {
+            format!("{}  {}  {}  {}  {}  {}  {}  {}  {}",Bg(LightBlack),Bg(LightRed),Bg(LightGreen),Bg(LightYellow),Bg(LightBlue),Bg(LightMagenta),Bg(LightCyan),Bg(LightWhite),Bg(Black))
+        },
 
-        "(r)" => Fg(color::Red).to_string(),
-        "(g)" => Fg(color::Green).to_string(),
-        "(y)" => Fg(color::Yellow).to_string(),
-        "(b)" => Fg(color::Blue).to_string(),
-        "(m)" => Fg(color::Magenta).to_string(),
-        "(c)" => Fg(color::Cyan).to_string(),
-        "(bg)" => Fg(color::Black).to_string(),
-        "(fg)" => Fg(color::White).to_string(),
-        "(rl)" => Fg(color::LightRed).to_string(),
-        "(gl)" => Fg(color::LightGreen).to_string(),
-        "(yl)" => Fg(color::LightYellow).to_string(),
-        "(bl)" => Fg(color::LightBlue).to_string(),
-        "(ml)" => Fg(color::LightMagenta).to_string(),
-        "(cl)" => Fg(color::LightCyan).to_string(),
-        "(bg)" => Fg(color::LightBlack).to_string(),
-        "(fg)" => Fg(color::LightWhite).to_string(),
+        "(r)" => Fg(Red).to_string(),
+        "(g)" => Fg(Green).to_string(),
+        "(y)" => Fg(Yellow).to_string(),
+        "(b)" => Fg(Blue).to_string(),
+        "(m)" => Fg(Magenta).to_string(),
+        "(c)" => Fg(Cyan).to_string(),
+
+        "(bg)" => Fg(Black).to_string(),
+        "(fg)" => Fg(White).to_string(),
+        "(rl)" => Fg(LightRed).to_string(),
+        "(gl)" => Fg(LightGreen).to_string(),
+        "(yl)" => Fg(LightYellow).to_string(),
+        "(bl)" => Fg(LightBlue).to_string(),
+        "(ml)" => Fg(LightMagenta).to_string(),
+        "(cl)" => Fg(LightCyan).to_string(),
+        "(bgl)" => Fg(LightBlack).to_string(),
+        "(fgl)" => Fg(LightWhite).to_string(),
+
+        "((r))" => Bg(Red).to_string(),
+        "((g))" => Bg(Green).to_string(),
+        "((y))" => Bg(Yellow).to_string(),
+        "((b))" => Bg(Blue).to_string(),
+        "((m))" => Bg(Magenta).to_string(),
+        "((c))" => Bg(Cyan).to_string(),
+
+        "((bg))" => Bg(Black).to_string(),
+        "((fg))" => Bg(White).to_string(),
+        "((rl))" => Bg(LightRed).to_string(),
+        "((gl))" => Bg(LightGreen).to_string(),
+        "((yl))" => Bg(LightYellow).to_string(),
+        "((bl))" => Bg(LightBlue).to_string(),
+        "((ml))" => Bg(LightMagenta).to_string(),
+        "((cl))" => Bg(LightCyan).to_string(),
+        "((bgl))" => Bg(LightBlack).to_string(),
+        "((fgl))" => Bg(LightWhite).to_string(),
+
         "<B>"  => style::Bold.to_string(),
         "<I>"  => style::Italic.to_string(),
         "<BI>" => format!("{}{}", style::Bold, style::Italic),
         "<N>"  => style::Reset.to_string(),
+
         _=> "".to_string()
 
     }
@@ -153,6 +180,9 @@ let default_config =
   (b)<B> (fgl): <N>[kernel](fgl)
   (b)<B> (fgl): <N>[shell](fgl)
   (b)<B> (fgl): <N>[term](fgl)
+
+  (b)[col](fgl)
+  (b)[col2](fgl)
 ";
     DirBuilder::new()
       .recursive(true)
@@ -200,6 +230,9 @@ fn main() {
         "[term]",  
         "[name]",  
         "[gpu]",  
+        "[env]",  
+        "[col]",  
+        "[col2]",  
         "(r)",
         "(g)",
         "(y)",
@@ -228,7 +261,6 @@ fn main() {
             let mut concat = art[i].clone() + &conf[i].clone();
 
             for j in 0..linetoinfo.len() {
-                // concat = check_contains(&concat, linetoinfo[j].clone());
                 concat = check_contains(&concat, linetoinfo[j].to_string());
             }
             print!("{}", concat);

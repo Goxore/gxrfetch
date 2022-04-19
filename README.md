@@ -2,6 +2,13 @@
 A simple and customizable fetch program written in rust.
 Works on most linux distros, probably works on mac, and maybe even somewhat works on windows (I did not test)
 
+# Dependencies
+* rust
+* coreutils
+
+optional:
+* nerdfonts - icons
+
 # Installation
 run the command
 
@@ -22,6 +29,7 @@ syntax:
 * \<B> - make text bold
 * \<I> - make text italic
 * \<BI> - make text bold and italic
-* [module] - module to insert (name,cpu,cores,bat,mem,os,distro,kernel,shell,term)
+* [module] - module to insert (name,cpu,cores,bat,mem,os,distro,kernel,shell,term,col,col2)
 
 [gpu] module is also avaliable, but highly discouraged to use, as it decreases performance
+[env] desktop environment, if avaliable
