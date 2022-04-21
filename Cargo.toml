@@ -6,9 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# colored = "2.0.0"
 termion = "1.5.6"
 systemstat = "*"
 fsi = "*"
 home = "0.5.3"
 nixinfo = "*"
+regex = "*"

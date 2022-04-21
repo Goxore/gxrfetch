@@ -1,6 +1,8 @@
 use std::env;
 use std::fs::{self,DirBuilder};
 use std::io::{self, Result};
+use regex::Regex;
+use std::process::Command;
 extern crate termion;
 use systemstat::{saturating_sub_bytes, Platform, System};
 use termion::{
@@ -67,8 +69,8 @@ fn get_specific(name: &str) -> String
         },
         "[bat]" =>  
         match sys.battery_life() {
-            Ok(battery) => (battery.remaining_capacity * 100.0).to_string(),
-            Err(x) => format!("err, {}", x).to_string(),
+            Ok(battery) =>  (battery.remaining_capacity * 100.0).floor().to_string(),
+            Err(x) => format!("err, {}", x),
         },
         "[mem]" => 
         match sys.memory() {
@@ -133,7 +135,20 @@ fn check_contains(line: &String, contains: String) -> String {
     let newline = line.to_string();
 
     if newline.contains(&contains) {
-        newline.replace(&contains, &get_specific(&contains))
+        if &contains == "[["
+        {
+            let re = Regex::new(r"\[\[.*\]\]").unwrap();
+            let m = re.find(line).unwrap().as_str();
+            let m2 = &m[2..m.len()-2];
+            let cmnd = Command::new("bash")
+                    .arg(format!("-c"))
+                    .arg(m2)
+                    .output()
+                    .expect("failed to execute process");
+            newline.replace(m, std::str::from_utf8(&cmnd.stdout).unwrap().trim())
+        }else{
+            newline.replace(&contains, &get_specific(&contains))
+        }
     } else {
         newline
     }
@@ -168,21 +183,21 @@ let default_ascii = "(y)          ██
 ";
 
 let default_config = 
-"  (m)<BI>[user](fgl)@(m)[host](fgl)
+"  (m)<BI>[user](fgl)@(m)[host]
   (fg)----------------
-  (b)<B> (fgl): <N>[name](fgl)
-  (b)<B>﬙ (fgl): <N>[cpu](fgl)
-  (b)<B> (fgl): <N>[cores] cores(fgl)
-  (b)<B> (fgl): <N>[bat]%(fgl)
-  (b)<B> (fgl): <N>[mem](fgl)
-  (b)<B> (fgl): <N>[uptime](fgl)
-  (b)<B> (fgl): <N>[distro](fgl)
-  (b)<B> (fgl): <N>[kernel](fgl)
-  (b)<B> (fgl): <N>[shell](fgl)
-  (b)<B> (fgl): <N>[term](fgl)
+  (b)<B> (fgl): <N>[name]
+  (b)<B>﬙ (fgl): <N>[cpu]
+  (b)<B> (fgl): <N>[cores] cores
+  (b)<B> (fgl): <N>[bat]%
+  (b)<B> (fgl): <N>[mem]
+  (b)<B> (fgl): <N>[uptime]
+  (b)<B> (fgl): <N>[distro]
+  (b)<B> (fgl): <N>[kernel]
+  (b)<B> (fgl): <N>[shell]
+  (b)<B> (fgl): <N>[term]
 
-  (b)[col](fgl)
-  (b)[col2](fgl)
+  (b)[col]
+  (b)[col2]
 ";
     DirBuilder::new()
       .recursive(true)
@@ -233,6 +248,7 @@ fn main() {
         "[env]",  
         "[col]",  
         "[col2]",  
+        "[[",  
         "(r)",
         "(g)",
         "(y)",
@@ -263,19 +279,19 @@ fn main() {
             for j in 0..linetoinfo.len() {
                 concat = check_contains(&concat, linetoinfo[j].to_string());
             }
-            print!("{}", concat);
+            print!("{}{}", concat,style::Reset.to_string());
 
             println!();
         } else if i < artlen {
             for k in 0..linetoinfo.len() {
                 art[i] = check_contains(&art[i], linetoinfo[k].to_string());
             }
-            println!("{:20}", art[i]);
+            println!("{:20}{}", art[i],style::Reset.to_string());
         } else if i < conflen {
             for k in 0..linetoinfo.len() {
                 conf[i] = check_contains(&conf[i], linetoinfo[k].to_string());
             }
-            println!("{:20}  {}", " ", conf[i]);
+            println!("{:20}  {}{}", " ", conf[i],style::Reset.to_string());
         }
     }
 }

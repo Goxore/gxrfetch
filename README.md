@@ -2,6 +2,14 @@
 A simple and customizable fetch program written in rust.
 Works on most linux distros, probably works on mac, and maybe even somewhat works on windows (I did not test)
 
+# Screenshots
+
+[trident](img/trident.png)
+
+[portal](img/portal.png)
+
+[megamind](img/megamind.png)
+
 # Dependencies
 * rust
 * coreutils
@@ -30,6 +38,9 @@ syntax:
 * \<I> - make text italic
 * \<BI> - make text bold and italic
 * [module] - module to insert (name,cpu,cores,bat,mem,os,distro,kernel,shell,term,col,col2)
+* [\[date]] - insert any bash command into double square brackets, and it will be replaced
+with it's output
 
 [gpu] module is also avaliable, but highly discouraged to use, as it decreases performance
+
 [env] desktop environment, if avaliable

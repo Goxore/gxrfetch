@@ -1,0 +1,15 @@
+  (m)<BI>[user](fgl)@(m)[host]
+  (fg)----------------
+  (b)<B> (fgl): <N>[name]
+  (b)<B>﬙ (fgl): <N>[cpu]
+  (b)<B> (fgl): <N>[cores] cores
+  (b)<B> (fgl): <N>[bat]%
+  (b)<B> (fgl): <N>[mem]
+  (b)<B> (fgl): <N>[uptime]
+  (b)<B> (fgl): <N>[distro]
+  (b)<B> (fgl): <N>[kernel]
+  (b)<B> (fgl): <N>[shell]
+  (b)<B> (fgl): <N>[term]
+
+  (b)[col]
+  (b)[col2]
