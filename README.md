@@ -4,11 +4,11 @@ Works on most linux distros, probably works on mac, and maybe even somewhat work
 
 # Screenshots
 
-[trident](img/trident.png)
+[img/trident.png](img/trident.png)
 
-[portal](img/portal.png)
+[img/portal.png](img/portal.png)
 
-[megamind](img/megamind.png)
+[img/meamind.png](img/megamind.png)
 
 # Dependencies
 * rust
@@ -30,6 +30,13 @@ binary executable will be avaliable in `./target/debug/gxrfeth`
 
 Configuration files are generated in `~/.config/gxrfetch` directory
 
+`~/.config/gxrfetch/config` - right part of the fetch, where modules are located
+`~/.config/gxrfetch/ascii` - left part of the fetch, where ascii art is located
+
+all spaces and tabs in both files affect how final result looks.
+I suggest leaving a couple of extra spaces before every line in `config` file,
+and check line endings in `ascii` file, so you don't get unexpected results.
+
 syntax:
 
 * (x) - color, where x is the first letter of the main 8 terminal colors
@@ -44,3 +51,7 @@ with it's output
 [gpu] module is also avaliable, but highly discouraged to use, as it decreases performance
 
 [env] desktop environment, if avaliable
+
+# Contributing
+
+Feel free to contribute code, ascii arts or config examples, i'm more than happy to include those!
