@@ -1,0 +1,6 @@
+  (fg)<BI>[user](fgl)@(fg)[host]
+  (fg)----------------
+  (b)<B>Name(fgl)   <N>[name]
+  (b)<B>Cpu(fgl)    <N>[cpu]
+  (b)<B>Uptime(fgl) <N>[uptime]
+  (b)<B>Kernel(fgl) <N>[kernel]

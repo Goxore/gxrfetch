@@ -1,0 +1,15 @@
+  (fg)<BI>[user](fgl)@(fg)[host]
+  (fg)----------------
+  (b)<B>Name(fgl): <N>[name]
+  (b)<B>Cpu(fgl): <N>[cpu]
+  (b)<B>Cores(fgl): <N>[cores] cores
+  (b)<B>Battery(fgl): <N>[bat]%
+  (b)<B>Memory(fgl): <N>[mem]
+  (b)<B>Uptime(fgl): <N>[uptime]
+  (b)<B>Distro(fgl): <N>[distro]
+  (b)<B>Kernel(fgl): <N>[kernel]
+  (b)<B>Shell(fgl): <N>[shell]
+  (b)<B>Terminal(fgl): <N>[term]
+
+  (b)[col]
+  (b)[col2]

@@ -1,12 +1,12 @@
 use std::env;
 use std::fs::{self,DirBuilder};
-use std::io::{self, Result};
+use std::io;
 use regex::Regex;
 use std::process::Command;
 extern crate termion;
 use systemstat::{saturating_sub_bytes, Platform, System};
 use termion::{
-    color::{self, *},
+    color::*,
     style,
 };
 
@@ -43,10 +43,10 @@ fn get_specific(name: &str) -> String
         "[cpu]" => matchvalue(nixinfo::cpu()),
         "[uptime]" => matchvalue(nixinfo::uptime()),
         "[os]" => env::consts::OS.to_string(),
-        "[user]" => env::var("USER").unwrap(),
+        "[user]" => env::var("USER").unwrap_or_else(|_| "not found".to_string()),
         "[host]" => matchvalue(nixinfo::hostname()),
         "[distro]" => matchvalue(nixinfo::distro()),
-        "[shell]" => fsi::get_shell().unwrap_or("not found".to_string()),
+        "[shell]" => fsi::get_shell().unwrap_or_else(|_| "not found".to_string()),
         "[kernel]" => matchvalue(nixinfo::kernel()),
         "[term]" => matchvalue(nixinfo::terminal()),
         "[name]" => matchvalue(nixinfo::device()),
@@ -82,7 +82,7 @@ fn get_specific(name: &str) -> String
         },
         "[col2]" => {
             format!("{}  {}  {}  {}  {}  {}  {}  {}  {}",Bg(LightBlack),Bg(LightRed),Bg(LightGreen),Bg(LightYellow),Bg(LightBlue),Bg(LightMagenta),Bg(LightCyan),Bg(LightWhite),Bg(Black))
-        },
+        }
 
         "(r)" => Fg(Red).to_string(),
         "(g)" => Fg(Green).to_string(),
@@ -141,7 +141,7 @@ fn check_contains(line: &String, contains: String) -> String {
             let m = re.find(line).unwrap().as_str();
             let m2 = &m[2..m.len()-2];
             let cmnd = Command::new("bash")
-                    .arg(format!("-c"))
+                    .arg("-c")
                     .arg(m2)
                     .output()
                     .expect("failed to execute process");
@@ -276,22 +276,22 @@ fn main() {
         if i < artlen && i < conflen {
             let mut concat = art[i].clone() + &conf[i].clone();
 
-            for j in 0..linetoinfo.len() {
-                concat = check_contains(&concat, linetoinfo[j].to_string());
+            for line in &linetoinfo {
+                concat = check_contains(&concat, line.to_string());
             }
-            print!("{}{}", concat,style::Reset.to_string());
+            print!("{}{}", concat,style::Reset);
 
             println!();
         } else if i < artlen {
-            for k in 0..linetoinfo.len() {
-                art[i] = check_contains(&art[i], linetoinfo[k].to_string());
+            for line in &linetoinfo {
+                art[i] = check_contains(&art[i], line.to_string());
             }
-            println!("{:20}{}", art[i],style::Reset.to_string());
+            println!("{}{}", art[i],style::Reset);
         } else if i < conflen {
-            for k in 0..linetoinfo.len() {
-                conf[i] = check_contains(&conf[i], linetoinfo[k].to_string());
+            for line in &linetoinfo {
+                conf[i] = check_contains(&conf[i], line.to_string());
             }
-            println!("{:20}  {}{}", " ", conf[i],style::Reset.to_string());
+            println!("{}{}", conf[i],style::Reset);
         }
     }
 }

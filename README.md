@@ -33,7 +33,7 @@ Configuration files are generated in `~/.config/gxrfetch` directory
 `~/.config/gxrfetch/config` - right part of the fetch, where modules are located
 `~/.config/gxrfetch/ascii` - left part of the fetch, where ascii art is located
 
-all spaces and tabs in both files affect how final result looks.
+all spaces and tabs in both files affect how the final result looks.
 I suggest leaving a couple of extra spaces before every line in `config` file,
 and check line endings in `ascii` file, so you don't get unexpected results.
 
