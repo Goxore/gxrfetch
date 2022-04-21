@@ -273,6 +273,7 @@ fn main() {
     .to_vec();
 
     for i in 0..maxlength {
+        print!("{}",style::Reset);
         if i < artlen && i < conflen {
             let mut concat = art[i].clone() + &conf[i].clone();
 
