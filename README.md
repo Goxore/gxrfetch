@@ -4,11 +4,11 @@ Works on most linux distros, probably works on mac, and maybe even somewhat work
 
 # Screenshots
 
-[img/trident.png](img/trident.png)
+![img/trident.png](img/trident.png)
 
-[img/portal.png](img/portal.png)
+![img/portal.png](img/portal.png)
 
-[img/megamind.png](img/megamind.png)
+![img/megamind.png](img/megamind.png)
 
 # Dependencies
 * rust
@@ -18,13 +18,24 @@ optional:
 * nerdfonts - icons
 
 # Installation
-run the command
+
+For installation clone the repository with
 
 ```bash
-cargo build
+git clone https://github.com/Goxore/gxrfetch.git
 ```
 
-binary executable will be avaliable in `./target/debug/gxrfeth`
+Move into the cloned directory:
+
+```bash
+cd gxrfetch
+```
+
+Build and install:
+
+```bash
+cargo install --path .
+```
 
 # Configuration
 
@@ -39,18 +50,18 @@ and check line endings in `ascii` file, so you don't get unexpected results.
 
 syntax:
 
-* (x) - color, where x is the first letter of the main 8 terminal colors
-* (xl) - light colors, where x is the first letter of the 8 terminal colors
-* \<B> - make text bold
-* \<I> - make text italic
-* \<BI> - make text bold and italic
-* [module] - module to insert (name,cpu,cores,bat,mem,os,distro,kernel,shell,term,col,col2)
-* [\[date]] - insert any bash command into double square brackets, and it will be replaced
+* `(x)` - color, where x is the first letter of the main 8 terminal colors
+* `(xl)` - light colors, where x is the first letter of the 8 terminal colors
+* `\<B>` - make text bold
+* `\<I>` - make text italic
+* `\<BI>` - make text bold and italic
+* `[module]` - module to insert (name,cpu,cores,bat,mem,os,distro,kernel,shell,term,col,col2)
+* `[\[date]]` - insert any bash command into double square brackets, and it will be replaced
 with it's output
 
-[gpu] module is also avaliable, but highly discouraged to use, as it decreases performance
+`[gpu]` module is also avaliable, but highly discouraged to use, as it decreases performance
 
-[env] desktop environment, if avaliable
+`[env]` desktop environment, if avaliable
 
 # Contributing
 
