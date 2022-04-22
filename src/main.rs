@@ -77,7 +77,7 @@ fn get_art(path: &String) -> Vec<String> {
 
 fn get_config(path: &String) -> Vec<String> {
     let config =
-        fs::read_to_string(format!("{}{}", path, "config")).expect("Error while reading asciiart");
+        fs::read_to_string(format!("{}{}", path, "config")).expect("Error while reading config");
     let confvec = config.lines().map(String::from).collect::<Vec<String>>();
     confvec
 }
@@ -262,7 +262,6 @@ fn main() {
     for i in 0..maxlength {
         stdio_lock.write_all(&STYLE_RESET_BYTES).expect("Error during write to stdout");
 
-        // print!("{}",style::Reset);
         if i < artlen && i < conflen {
             let mut concat = art[i].clone() + &conf[i].clone();
 
@@ -271,9 +270,6 @@ fn main() {
             }
             stdio_lock.write_all(concat.as_bytes()).expect("Error during write to stdout");
             reset_style_and_newline(&mut stdio_lock);
-            // print!("{}{}", concat,style::Reset);
-
-            // println!();
         } else if i < artlen {
             for line in &LINE_TO_INFO {
                 art[i] = check_contains(&art[i], line.to_string());
