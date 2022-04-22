@@ -4,11 +4,11 @@ Works on most linux distros, probably works on mac, and maybe even somewhat work
 
 # Screenshots
 
-[img/trident.png](img/trident.png)
+![img/trident.png](img/trident.png)
 
-[img/portal.png](img/portal.png)
+![img/portal.png](img/portal.png)
 
-[img/megamind.png](img/megamind.png)
+![img/megamind.png](img/megamind.png)
 
 # Dependencies
 * rust
@@ -18,13 +18,24 @@ optional:
 * nerdfonts - icons
 
 # Installation
-run the command
+
+For installation clone the repository with
 
 ```bash
-cargo build
+git clone https://github.com/Goxore/gxrfetch.git
 ```
 
-binary executable will be avaliable in `./target/debug/gxrfeth`
+Move into the cloned directory:
+
+```bash
+cd gxrfetch
+```
+
+Build and install:
+
+```bash
+cargo install --path .
+```
 
 # Configuration
 
