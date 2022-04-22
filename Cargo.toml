@@ -1,5 +1,6 @@
 [package]
 name = "gxrfetch"
+description = "A simple but very customizable fetch program"
 version = "0.8.0"
 edition = "2021"
 license = "GPL-3.0"
