@@ -1,6 +1,6 @@
 use std::env;
 use std::fs::{self,DirBuilder};
-use std::io;
+use std::io::{self, Write};
 use regex::Regex;
 use std::process::Command;
 extern crate termion;
@@ -10,6 +10,63 @@ use termion::{
     style,
 };
 
+const DEFAULT_ASCII: &'static str = include_str!("../examples/ascii_examples/ukrainian_trident");
+const DEFAULT_CONFIG: &'static str = include_str!("../examples/config_examples/config_default");
+
+const LINE_TO_INFO: [&'static str; 38] = {
+    let line_to_info = [
+        "[cpu]",   
+        "[cores]", 
+        "[bat]",   
+        "[mem]",   
+        "[uptime]",
+        "[os]",    
+        "[user]",  
+        "[host]",  
+        "[distro]",
+        "[shell]", 
+        "[kernel]",
+        "[term]",  
+        "[name]",  
+        "[gpu]",  
+        "[env]",  
+        "[col]",  
+        "[col2]",  
+        "[[",  
+        "(r)",
+        "(g)",
+        "(y)",
+        "(b)",
+        "(m)",
+        "(c)",
+        "(bg)",
+        "(fg)",
+        "(rl)",
+        "(gl)",
+        "(yl)",
+        "(bl)",
+        "(ml)",
+        "(cl)",
+        "(bgl)",
+        "(fgl)",
+        "<B>",
+        "<I>",
+        "<BI>",
+        "<N>",
+    ];
+    line_to_info
+};
+
+lazy_static::lazy_static! {
+    static ref STYLE_RESET_BYTES: Vec<u8> = {
+        let style_string = format!("{}", style::Reset);
+        style_string.as_bytes().to_vec()
+    };
+    static ref NEWLINE_BYTES: Vec<u8> = {
+        let new_line_string = "\n";
+        new_line_string.as_bytes().to_vec()
+    };
+}
 
 fn get_art(path: &String) -> Vec<String> {
     let art =
@@ -34,8 +91,7 @@ fn matchvalue(result: io::Result<String>) -> String
     }
 }
 
-fn get_specific(name: &str) -> String
-{
+fn get_specific(name: &str) -> String {
     let sys = System::new();
     
     match name
@@ -163,56 +219,26 @@ fn check_dir_existance(path: &String) -> bool
 fn generate_config(config_dir_path: &String) -> std::io::Result<()>
 {
 
-let default_ascii = "(y)          ██         
-(y) ██      ████      ██
-(y) ████    ████    ████
-(y) ██ ██    ██    ██ ██
-(y) ██ ██    ██    ██ ██
-(y) ██  ██   ██   ██  ██
-(y) ██  ██   ██   ██  ██
-(y) ██  ██  ████  ██  ██
-(y) █████   ████   █████
-(y) ██  █  ██  ██  █  ██
-(y) ██  █████  █████  ██
-(y) ██   ██ ████ ██   ██
-(y) ████████████████████
-(y)      ███ ██ ███     
-(y)        ██████       
-(y)          ██         
-
-";
-
-let default_config = 
-"  (m)<BI>[user](fgl)@(m)[host]
-  (fg)----------------
-  (b)<B> (fgl): <N>[name]
-  (b)<B>﬙ (fgl): <N>[cpu]
-  (b)<B> (fgl): <N>[cores] cores
-  (b)<B> (fgl): <N>[bat]%
-  (b)<B> (fgl): <N>[mem]
-  (b)<B> (fgl): <N>[uptime]
-  (b)<B> (fgl): <N>[distro]
-  (b)<B> (fgl): <N>[kernel]
-  (b)<B> (fgl): <N>[shell]
-  (b)<B> (fgl): <N>[term]
-
-  (b)[col]
-  (b)[col2]
-";
     DirBuilder::new()
       .recursive(true)
       .create(config_dir_path)?;
 
-    fs::write(format!("{}{}",config_dir_path,"config"), default_config)?;
-    fs::write(format!("{}{}",config_dir_path,"ascii"), default_ascii)?;
+    fs::write(format!("{}{}",config_dir_path,"config"), DEFAULT_CONFIG)?;
+    fs::write(format!("{}{}",config_dir_path,"ascii"), DEFAULT_ASCII)?;
     Ok(())
+}
+
+#[inline]
+fn reset_style_and_newline<'a>(lock: &mut std::io::StdoutLock<'a>) {
+    lock.write_all(&STYLE_RESET_BYTES).expect("Error during write to stdout");
+    lock.write_all(&NEWLINE_BYTES).expect("Error during write to stdout");
 }
 
 fn main() {
 
     let path = match home::home_dir() {
-        Some(dir) => format!("{}/.config/gxrfetch/", dir.display()),
-        None => "./".to_string(),
+        Some(dir) => format!("{0}{1}.config{1}gxrfetch{1}", dir.display(), std::path::MAIN_SEPARATOR),
+        None => format!(".{}", std::path::MAIN_SEPARATOR) 
     };
 
     if !check_dir_existance(&path) {
@@ -230,69 +256,36 @@ fn main() {
         maxlength = conflen;
     }
 
-    let linetoinfo: Vec<&str> = [
-        "[cpu]",   
-        "[cores]", 
-        "[bat]",   
-        "[mem]",   
-        "[uptime]",
-        "[os]",    
-        "[user]",  
-        "[host]",  
-        "[distro]",
-        "[shell]", 
-        "[kernel]",
-        "[term]",  
-        "[name]",  
-        "[gpu]",  
-        "[env]",  
-        "[col]",  
-        "[col2]",  
-        "[[",  
-        "(r)",
-        "(g)",
-        "(y)",
-        "(b)",
-        "(m)",
-        "(c)",
-        "(bg)",
-        "(fg)",
-        "(rl)",
-        "(gl)",
-        "(yl)",
-        "(bl)",
-        "(ml)",
-        "(cl)",
-        "(bgl)",
-        "(fgl)",
-        "<B>",
-        "<I>",
-        "<BI>",
-        "<N>",
-    ]
-    .to_vec();
+    let stdio = std::io::stdout();
+    let mut stdio_lock = stdio.lock();
 
     for i in 0..maxlength {
-        print!("{}",style::Reset);
+        stdio_lock.write_all(&STYLE_RESET_BYTES).expect("Error during write to stdout");
+
+        // print!("{}",style::Reset);
         if i < artlen && i < conflen {
             let mut concat = art[i].clone() + &conf[i].clone();
 
-            for line in &linetoinfo {
+            for line in &LINE_TO_INFO {
                 concat = check_contains(&concat, line.to_string());
             }
-            print!("{}{}", concat,style::Reset);
+            stdio_lock.write_all(concat.as_bytes()).expect("Error during write to stdout");
+            reset_style_and_newline(&mut stdio_lock);
+            // print!("{}{}", concat,style::Reset);
 
-            println!();
+            // println!();
         } else if i < artlen {
-            for line in &linetoinfo {
+            for line in &LINE_TO_INFO {
                 art[i] = check_contains(&art[i], line.to_string());
             }
-            println!("{}{}", art[i],style::Reset);
+            stdio_lock.write_all(art[i].as_bytes()).expect("Error during write to stdout");
+            reset_style_and_newline(&mut stdio_lock);
         } else if i < conflen {
-            for line in &linetoinfo {
+            for line in &LINE_TO_INFO {
                 conf[i] = check_contains(&conf[i], line.to_string());
             }
-            println!("{}{}", conf[i],style::Reset);
+            stdio_lock.write_all(conf[i].as_bytes()).expect("Error during write to stdout");
+            reset_style_and_newline(&mut stdio_lock);
         }
     }
 }
