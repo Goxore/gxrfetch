@@ -8,7 +8,7 @@ Works on most linux distros, probably works on mac, and maybe even somewhat work
 
 [img/portal.png](img/portal.png)
 
-[img/meamind.png](img/megamind.png)
+[img/megamind.png](img/megamind.png)
 
 # Dependencies
 * rust
