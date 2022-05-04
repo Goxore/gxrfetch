@@ -97,7 +97,10 @@ fn get_specific(name: &str) -> String {
     match name
     {
         "[cpu]" => matchvalue(nixinfo::cpu()),
-        "[uptime]" => matchvalue(nixinfo::uptime()),
+        "[uptime]" => {
+            let uptime = matchvalue(nixinfo::uptime());
+            if uptime.is_empty() {"<1m".to_string()} else {uptime}
+        },
         "[os]" => env::consts::OS.to_string(),
         "[user]" => env::var("USER").unwrap_or_else(|_| "not found".to_string()),
         "[host]" => matchvalue(nixinfo::hostname()),
